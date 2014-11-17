@@ -7,13 +7,11 @@ import java.util.logging.*;
 public class Client {
 
     Socket client;
-    funtions send;
     DataInputStream in = null;    
     
     public Client(String direction , int port){
         try {
             client =  new Socket(direction, port);
-            send = new funtions();
         } catch (UnknownHostException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -66,12 +64,12 @@ public class Client {
             inn.close();
             outt.close();
         } catch (IOException ex) {
-            Logger.getLogger(funtions.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 in.close();
             } catch (IOException ex) {
-                Logger.getLogger(funtions.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -116,7 +114,7 @@ public class Client {
             boss.close();
             //so1.close(); 
         } catch (IOException ex) {
-            Logger.getLogger(funtions.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
