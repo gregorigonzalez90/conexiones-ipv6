@@ -5,16 +5,16 @@ import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Server {
+public class Server{
 
     ServerSocket ServerSocket;
     Socket socket;
-    SendFile send;
-
-    public Server(int port) {
+    funtions send;
+    
+    public Server (int port) {
         try {
             ServerSocket = new ServerSocket(port);
-            send = new SendFile();
+            send = new funtions();
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -27,7 +27,6 @@ public class Server {
                 System.out.println("Waiting Connection");
                 socket = ServerSocket.accept();
                 System.out.println("Is connected" + socket.getInetAddress());
-                send.receives_file(socket);
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }

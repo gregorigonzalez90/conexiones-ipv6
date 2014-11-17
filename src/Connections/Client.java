@@ -7,13 +7,12 @@ import java.util.logging.*;
 public class Client {
 
     Socket client;
-    SendFile send;
+    funtions send;
     
     public Client(String direction , int port){
         try {
             client =  new Socket(direction, port);
-            send = new SendFile();
-            send.send_file(client, "x.txt");
+            send = new funtions();
         } catch (UnknownHostException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
