@@ -9,12 +9,10 @@ public class Server{
 
     ServerSocket ServerSocket;
     Socket socket;
-    funtions send;
     
     public Server (int port) {
         try {
             ServerSocket = new ServerSocket(port);
-            send = new funtions();
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -31,11 +29,5 @@ public class Server{
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
-
-    public static void main(String[] args) {
-
-        Server server = new Server(40001);
-        server.connet();
     }
 }
