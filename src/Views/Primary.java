@@ -19,10 +19,12 @@ public class Primary extends javax.swing.JFrame {
     public Primary() {
         initComponents();
         this.setResizable(false);
-        listUsersComboBox = new ListUsers(jComboBox1);
+        listUsersComboBox = new ListUsers();
         
-        String[] users = {"Hola", "Mundo"};
-        listUsersComboBox.setUsers(users);
+
+        listUsersComboBox.setUsers(jComboBox1);
+        listUsersComboBox.setUsers(jComboBox2);
+
     }
 
     /**
@@ -52,8 +54,6 @@ public class Primary extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridLayout());
-
-        jTabbedPane2.setPreferredSize(new java.awt.Dimension(400, 410));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 

@@ -6,16 +6,22 @@ import javax.swing.JComboBox;
 
 public class ListUsers {
     
-    private final JComboBox<String> listUsers;
     DefaultComboBoxModel<String> comboBoxModel;
+    String[] listUsers;
     
-    public ListUsers(JComboBox jComboListUsers) {
-        listUsers = jComboListUsers;
-        comboBoxModel = new DefaultComboBoxModel<>();
+    public ListUsers() {
+        String[] users = {"Hola", "Mundo"};
+        listUsers = users;
     }
     
-    public void setUsers(String[] users) { 
-        this.listUsers.setModel(new DefaultComboBoxModel<String>(users));
+    public void refreshList(String[] users) { 
+        this.listUsers = users;
     }
+    
+    public void setUsers(JComboBox<String> jComboBox) {
+        jComboBox.setModel(new DefaultComboBoxModel<String>(listUsers));
+    }
+    
+    
     
 }
