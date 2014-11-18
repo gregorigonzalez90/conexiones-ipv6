@@ -12,9 +12,7 @@ public class mail {
     public static void main(String[] args) {
 
         Advertisement ad = new Advertisement();
-        String[] a = ad.listPublicFiles("public");
-        for (int i = 0; i < a.length; i++) {
-            System.out.println(a[i]);
-        }
+        ad.start();
+
     }
 }

@@ -1,4 +1,3 @@
-
 package Connections;
 
 import java.io.IOException;
@@ -13,16 +12,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Notifications {
-    
-    private InetAddress GROUP;
-    private final Logger LOGGER = Logger.getLogger(Advertisement.class.getName());
-    private int PORT = 43000;
+
+    private static InetAddress GROUP;
+    private static int PORT = 43000;
     private String MCAST_ADDR = "FF02::1";
     private String interfaz_name = "en3";
 
     public Notifications(String mcast_addr, int port) {
         this.PORT = port;
-        
+
         try {
             GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), NetworkInterface.getByName(interfaz_name));
         } catch (SocketException ex) {
@@ -33,8 +31,7 @@ public class Notifications {
 
     }
 
-    
-        private static Thread client() {
+    private static Thread client() {
         return new Thread(new Runnable() {
             public void run() {
                 try {
@@ -54,7 +51,7 @@ public class Notifications {
 
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }

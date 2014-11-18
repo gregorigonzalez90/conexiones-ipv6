@@ -12,10 +12,11 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Advertisement {
+public class Advertisement extends Thread {
 
     private static final Logger LOGGER = Logger.getLogger(Advertisement.class.getName());
     private static final int PORT = 43000;
@@ -24,11 +25,21 @@ public class Advertisement {
     private static InetAddress GROUP;
     private String interfaz_name = "en3";
 
+    DatagramSocket serverSocket = null;
+    int packetsize = 256;
+    String dir_public = "public";
+    
     public Advertisement() {
         try {
             GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), NetworkInterface.getByName(interfaz_name));
         } catch (UnknownHostException ex) {
             Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SocketException ex) {
+            Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            serverSocket = new DatagramSocket();
         } catch (SocketException ex) {
             Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -55,40 +66,30 @@ public class Advertisement {
         } else {
             System.out.println("No Hay Archivos");
         }
-        return new String[] {""};
+        return new String[]{""};
     }
 
-    private static Thread server() {
-        return new Thread(new Runnable() {
-            public void run() {
-                try {
-                    DatagramSocket serverSocket = null;
-
-                    serverSocket = new DatagramSocket();
-
-                    while (true) {
-                        byte[] sendData = new byte[256];
-                        String data = new String("Prueba");
-                        DatagramPacket sendPacket = new DatagramPacket(data.getBytes(), data.getBytes().length, GROUP, PORT);
-                        try {
-                            serverSocket.send(sendPacket);
-                            System.out.println("Server: " + sendPacket.getAddress());
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } catch (IOException ex) {
-                            Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    }
-                } catch (SocketException ex) {
-                    Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
+    public void sendPublicFilesAvailable(String[] list) {
+        Charset set = Charset.forName("UTF-8");
+        for (String file : list) {
+            DatagramPacket packet = new DatagramPacket(file.getBytes(set), file.getBytes(set).length, GROUP, PORT);
+            try {
+                serverSocket.send(packet);
+                System.out.println(file);
+            } catch (IOException ex) {
+                Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
+        }
     }
 
+    public void run() {
+        while (true) {
+            try {
+                sendPublicFilesAvailable(listPublicFiles(dir_public));
+                Thread.sleep(15000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }
