@@ -1,5 +1,6 @@
 package Connections;
 
+import Views.Primary;
 import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
@@ -19,7 +20,6 @@ public class Server{
     }
 
     public void connet() {
-
         while (true) {
             try {
                 System.out.println("Waiting Connection");
