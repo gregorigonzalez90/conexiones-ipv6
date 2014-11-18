@@ -39,6 +39,7 @@ public class Primary extends javax.swing.JFrame {
 
         listUsersComboBox.addJComboBox(jComboBox1);
         listUsersComboBox.addJComboBox(jComboBox2);
+        listUsersComboBox.setFilesComponent(listFilesComponent);
         noti.start();
         ad.start();
         
@@ -70,7 +71,7 @@ public class Primary extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridLayout());
+        getContentPane().setLayout(new java.awt.GridLayout(1, 0));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -81,7 +82,6 @@ public class Primary extends javax.swing.JFrame {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jList1.setBounds(new java.awt.Rectangle(0, 0, 40, 136));
         jList1.setPreferredSize(new java.awt.Dimension(40, 85));
         jScrollPane2.setViewportView(jList1);
 

@@ -1,6 +1,8 @@
 
 package Controllers;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ public class ListUsersComponent {
     DefaultComboBoxModel<String> comboBoxModel;
     String[] listUsers;
     ArrayList<JComboBox<String>> jcombos;
+    private ListFilesUserComponent listFilesComponent;
     
     public ListUsersComponent() {
         jcombos = new ArrayList<>();
@@ -34,17 +37,18 @@ public class ListUsersComponent {
     
     
     public void addJComboBox(JComboBox<String> jcombo) { 
-        jcombo.addItemListener(new ItemListener() {
+        jcombo.addActionListener(new ActionListener() {
             @Override
-            public void itemStateChanged(ItemEvent e) {
-                System.out.println("cambiado");
+            public void actionPerformed(ActionEvent e) {
+                JComboBox<String> a = (JComboBox<String>) e.getSource();
+                System.out.println(a.getSelectedIndex());
             }
         });
         jcombos.add(jcombo);
     }
-    
-    public void setUsers(JComboBox<String> jComboBox) {
-        
+
+    public void setFilesComponent(ListFilesUserComponent listFilesComponent) {
+        this.listFilesComponent = listFilesComponent;
     }
     
     
