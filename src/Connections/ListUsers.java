@@ -11,11 +11,9 @@ public class ListUsers {
     
     public ListUsers(JComboBox jComboListUsers) {
         listUsers = jComboListUsers;
-        comboBoxModel = new DefaultComboBoxModel<>();
+        //comboBoxModel = new DefaultComboBoxModel<listUsers>();
     }
-    
-    public void setUsers(String[] users) { 
+    public void setUsers(String[] users) {
         this.listUsers.setModel(new DefaultComboBoxModel<String>(users));
-    }
-    
+    }   
 }

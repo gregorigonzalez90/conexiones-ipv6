@@ -3,36 +3,69 @@ package Connections;
 import java.io.*;
 import java.net.*;
 import java.util.logging.*;
+import javax.swing.JList;
 
 public class Client {
 
     Socket client;
-    DataInputStream in = null;    
-    
-    public Client(String direction , int port){
+    DataInputStream in = null;
+
+    public Client() {
+    }
+
+    public void Conect(String direction, int port) {
         try {
-            client =  new Socket(direction, port);
+            client = new Socket(direction, port);
+            Send_Direct(client);
         } catch (UnknownHostException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public File[] ListarDirect() {
-        File file = new File("public/");
-        File[] ficheros = null;
-        if (file.exists()) {
-            ficheros = file.listFiles();
-            for (int x = 0; x < ficheros.length; x++) {
-                System.out.println(ficheros[x].getName());
+
+    public void Send_Direct(Socket so) {
+        DataOutputStream salida = null;
+        try {
+            File file = new File("public/");
+            File[] ficheros = null;
+            salida = new DataOutputStream(so.getOutputStream());
+            if (file.exists()) {
+                ficheros = file.listFiles();
+                salida.writeInt(ficheros.length);
+                System.out.println(ficheros.length);
+                for (int x = 0; x < ficheros.length; x++) {
+                    salida.writeUTF(ficheros[x].getName());
+                }
+            } else {
+                System.out.println("No Hay Archivos");
             }
-        } else {
-            System.out.println("No Hay Archivos");
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                salida.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        return ficheros;
     }
-    
+
+    public void actualiza_Direct(Socket so, JList list) {
+        try {
+            DataInputStream dis;
+            dis = new DataInputStream(so.getInputStream());
+            int cant = dis.readInt();
+            String cad[] = new String[cant];
+            for (int i = 0; i < cant; i++) {
+                dis = new DataInputStream(so.getInputStream());
+                System.out.println(cad[i] = dis.readUTF().toString());
+            }
+            list.setListData(cad);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public void receives_file(Socket so1) {
 
         try {
@@ -55,7 +88,7 @@ public class Client {
             byte[] buffer = new byte[tam];
             // Obtenemos el archivo mediante la lectura de bytes enviados
             for (int i = 0; i < buffer.length; i++) {
-                buffer[ i] = (byte) inn.read();
+                buffer[i] = (byte) inn.read();
             }
             // Escribimos el archivo
             outt.write(buffer);
@@ -72,9 +105,6 @@ public class Client {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-
-
     }
 
     public void send_file(Socket so1, String Name) {
@@ -106,7 +136,7 @@ public class Client {
 
             // Realizamos el envio de los bytes que conforman el archivo
             for (int i = 0; i < buffer.length; i++) {
-                boss.write(buffer[ i]);
+                boss.write(buffer[i]);
             }
             System.out.println("Archivo Enviado: " + archivo.getName());
             // Cerramos socket y flujos
