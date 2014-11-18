@@ -9,47 +9,21 @@ public class Client {
 
     Socket client;
     DataInputStream in = null;
-
+    String dir_public = "public";
+    
     public Client() {
     }
 
     public void Conect(String direction, int port) {
         try {
             client = new Socket(direction, port);
-            Send_Direct(client);
         } catch (UnknownHostException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void Send_Direct(Socket so) {
-        DataOutputStream salida = null;
-        try {
-            File file = new File("public/");
-            File[] ficheros = null;
-            salida = new DataOutputStream(so.getOutputStream());
-            if (file.exists()) {
-                ficheros = file.listFiles();
-                salida.writeInt(ficheros.length);
-                System.out.println(ficheros.length);
-                for (int x = 0; x < ficheros.length; x++) {
-                    salida.writeUTF(ficheros[x].getName());
-                }
-            } else {
-                System.out.println("No Hay Archivos");
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                salida.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
+    
 
     public void actualiza_Direct(Socket so, JList list) {
         try {
@@ -66,6 +40,7 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public void receives_file(Socket so1) {
 
         try {
