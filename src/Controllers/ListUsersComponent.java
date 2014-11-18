@@ -1,15 +1,15 @@
 
-package Connections;
+package Controllers;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-public class ListUsers {
+public class ListUsersComponent {
     
     DefaultComboBoxModel<String> comboBoxModel;
     String[] listUsers;
     
-    public ListUsers() {
+    public ListUsersComponent() {
         String[] users = {"Hola", "Mundo"};
         listUsers = users;
     }

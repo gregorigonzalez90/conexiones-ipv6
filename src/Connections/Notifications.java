@@ -8,16 +8,24 @@ import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Notifications {
+public class Notifications extends Thread {
 
+    private static final Logger LOGGER = Logger.getLogger(Advertisement.class.getName());
     private static InetAddress GROUP;
     private static int PORT = 43000;
     private String MCAST_ADDR = "FF02::1";
     private String interfaz_name = "en3";
 
+    MulticastSocket multicastSocket = null;
+    int packetsize = 256;
+    
+    ArrayList<ArrayList<String>> listFilesForUser;
+    ArrayList<String> usersName;
+    
     public Notifications(String mcast_addr, int port) {
         this.PORT = port;
 
@@ -29,32 +37,46 @@ public class Notifications {
             Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        try {
+            multicastSocket = new MulticastSocket(PORT);
+            multicastSocket.joinGroup(GROUP);
+        } catch (IOException ex) {
+            Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        listFilesForUser = new ArrayList<>();
+        usersName = new ArrayList<>();
+
     }
+    
+    public void addFileToUser(String filename, String ipAddress) { 
+        if(!usersName.contains(ipAddress)) {
+            usersName.add(ipAddress);
+            listFilesForUser.add(usersName.lastIndexOf(ipAddress), new ArrayList<String>());
+        }
+        ArrayList<String> temp_array = listFilesForUser.get(usersName.indexOf(ipAddress));
+        if(!temp_array.contains(filename)) { 
+            temp_array.add(filename);
+        }
+    }
+    
+    public void run() {
+        try {
+            LOGGER.info("IP multicast: " + multicastSocket.getInterface().getHostAddress());
 
-    private static Thread client() {
-        return new Thread(new Runnable() {
-            public void run() {
-                try {
-                    MulticastSocket multicastSocket = null;
-
-                    multicastSocket = new MulticastSocket(PORT);
-                    multicastSocket.joinGroup(GROUP);
-                    System.out.println("IP multicast: " + multicastSocket.getInterface().getHostAddress());
-                    while (true) {
-
-                        byte[] receiveData = new byte[256];
-
-                        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length, GROUP, PORT);
-                        multicastSocket.receive(receivePacket);
-                        System.out.println("Cliente " + new String(receivePacket.getData(), 0, 5));
-//                                LOGGER.info("Client received from : " + receivePacket.getAddress() + ", " + new String(receivePacket.getData()));
-
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
+            while (true) {
+                byte[] receiveData = new byte[packetsize];
+                DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length, GROUP, PORT);
+                multicastSocket.receive(packet);
+                String mensaje = new String(packet.getData(), 0, packet.getLength());
+                if(mensaje.matches(".*\\..*")) { 
+                    addFileToUser(mensaje, packet.getAddress().getHostAddress());
                 }
-
+                System.out.println("Cliente " + mensaje);
             }
-        });
+        } catch (IOException ex) {
+            Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }

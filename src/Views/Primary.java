@@ -5,21 +5,21 @@
  */
 
 package Views;
-import Connections.ListUsers;
+import Controllers.ListUsersComponent;
 /**
  *
  * @author xyklex
  */
 public class Primary extends javax.swing.JFrame {
 
-    ListUsers listUsersComboBox;
+    ListUsersComponent listUsersComboBox;
     /**
      * Creates new form Primary
      */
     public Primary() {
         initComponents();
         this.setResizable(false);
-        listUsersComboBox = new ListUsers();
+        listUsersComboBox = new ListUsersComponent();
         
 
         listUsersComboBox.setUsers(jComboBox1);

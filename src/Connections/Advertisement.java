@@ -27,6 +27,7 @@ public class Advertisement extends Thread {
 
     DatagramSocket serverSocket = null;
     int packetsize = 256;
+    int timeForReUpload = 1000;
     String dir_public = "public";
     
     public Advertisement() {
@@ -75,7 +76,6 @@ public class Advertisement extends Thread {
             DatagramPacket packet = new DatagramPacket(file.getBytes(set), file.getBytes(set).length, GROUP, PORT);
             try {
                 serverSocket.send(packet);
-                System.out.println(file);
             } catch (IOException ex) {
                 Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -86,7 +86,7 @@ public class Advertisement extends Thread {
         while (true) {
             try {
                 sendPublicFilesAvailable(listPublicFiles(dir_public));
-                Thread.sleep(15000);
+                Thread.sleep(timeForReUpload);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
             }
