@@ -1,5 +1,7 @@
 package Connections;
 
+import Controllers.ListFilesUserComponent;
+import Controllers.ListUsersComponent;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.Inet6Address;
@@ -9,30 +11,36 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Notifications extends Thread {
 
     private static final Logger LOGGER = Logger.getLogger(Advertisement.class.getName());
-    private static InetAddress GROUP;
-    private static int PORT = 43000;
-    private String MCAST_ADDR = "FF02::1";
-    private String interfaz_name = "en3";
-
+    private InetAddress GROUP;
+    private int PORT;
+    private String MCAST_ADDR;
+    private String interface_name;
+    private String dir_public;
+    
     MulticastSocket multicastSocket = null;
     int packetsize = 256;
     
     ArrayList<ArrayList<String>> listFilesForUser;
     ArrayList<String> usersName;
+    private ListFilesUserComponent fileJListManagement;
+    private ListUsersComponent listUsersComboBox;
     
-    public Notifications(String mcast_addr, int port) {
+    public Notifications(String mcast_addr, String interface_name, int port, String dir_public) {
+        this.interface_name = interface_name;
+        this.MCAST_ADDR = mcast_addr;
         this.PORT = port;
-
+        this.dir_public = dir_public;
+        
         try {
-            GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), NetworkInterface.getByName(interfaz_name));
-        } catch (SocketException ex) {
-            Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
+            //GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), NetworkInterface.getByName(interfaz_name));
+            GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), 10);
         } catch (UnknownHostException ex) {
             Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -58,8 +66,13 @@ public class Notifications extends Thread {
         if(!temp_array.contains(filename)) { 
             temp_array.add(filename);
         }
+        renderListUsers();
     }
     
+    public void renderListUsers() { 
+        listUsersComboBox.refreshList(usersName);
+    }
+ 
     public void run() {
         try {
             LOGGER.info("IP multicast: " + multicastSocket.getInterface().getHostAddress());
@@ -72,11 +85,18 @@ public class Notifications extends Thread {
                 if(mensaje.matches(".*\\..*")) { 
                     addFileToUser(mensaje, packet.getAddress().getHostAddress());
                 }
-                System.out.println("Cliente " + mensaje);
             }
         } catch (IOException ex) {
             Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public void setFilesUserComponent(ListFilesUserComponent fileJListManagement) {
+        this.fileJListManagement = fileJListManagement;
+    }
+
+    public void setUserComponent(ListUsersComponent listUsersComboBox) {
+        this.listUsersComboBox = listUsersComboBox;
     }
 }

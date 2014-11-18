@@ -19,23 +19,29 @@ import java.util.logging.Logger;
 public class Advertisement extends Thread {
 
     private static final Logger LOGGER = Logger.getLogger(Advertisement.class.getName());
-    private static final int PORT = 43000;
-    private static final String MCAST_ADDR = "FF02::1";
-
-    private static InetAddress GROUP;
-    private String interfaz_name = "en3";
-
+    private int PORT;
+    private String MCAST_ADDR;
+    private InetAddress GROUP;
+    private String interface_name;
+    private String dir_public;
+    
     DatagramSocket serverSocket = null;
     int packetsize = 256;
     int timeForReUpload = 1000;
-    String dir_public = "public";
     
-    public Advertisement() {
+
+    
+    public Advertisement(String mcast_addr, String interface_name, int port, String dir_public) {
+        this.interface_name = interface_name;
+        this.MCAST_ADDR = mcast_addr;
+        this.PORT = port;
+        this.dir_public = dir_public;
+        
         try {
-            GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), NetworkInterface.getByName(interfaz_name));
+            //GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), NetworkInterface.getByName(interfaz_name));
+            GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), 10);
+
         } catch (UnknownHostException ex) {
-            Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SocketException ex) {
             Logger.getLogger(Advertisement.class.getName()).log(Level.SEVERE, null, ex);
         }
 

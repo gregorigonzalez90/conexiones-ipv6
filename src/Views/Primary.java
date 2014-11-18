@@ -5,6 +5,9 @@
  */
 
 package Views;
+import Connections.Advertisement;
+import Connections.Notifications;
+import Controllers.ListFilesUserComponent;
 import Controllers.ListUsersComponent;
 /**
  *
@@ -12,7 +15,13 @@ import Controllers.ListUsersComponent;
  */
 public class Primary extends javax.swing.JFrame {
 
-    ListUsersComponent listUsersComboBox;
+    ListUsersComponent listUsersComboBox;  
+    ListFilesUserComponent listFilesComponent;
+            
+    String mcast_addr = "ff02::1";
+    int port = 43000;
+    String interface_name = "en0";
+    String dir_public = "public";
     /**
      * Creates new form Primary
      */
@@ -20,11 +29,19 @@ public class Primary extends javax.swing.JFrame {
         initComponents();
         this.setResizable(false);
         listUsersComboBox = new ListUsersComponent();
+        listFilesComponent = new ListFilesUserComponent();
+
+        Advertisement ad = new Advertisement(mcast_addr, interface_name, port, dir_public);
+        Notifications noti = new Notifications(mcast_addr, interface_name, port, dir_public);
+        noti.setFilesUserComponent(listFilesComponent);
+        noti.setUserComponent(listUsersComboBox);
         
 
-        listUsersComboBox.setUsers(jComboBox1);
-        listUsersComboBox.setUsers(jComboBox2);
-
+        listUsersComboBox.addJComboBox(jComboBox1);
+        listUsersComboBox.addJComboBox(jComboBox2);
+        noti.start();
+        ad.start();
+        
     }
 
     /**
