@@ -39,9 +39,11 @@ public class Notifications extends Thread {
         this.dir_public = dir_public;
         
         try {
-            //GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), NetworkInterface.getByName(interfaz_name));
-            GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), 10);
+            GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), NetworkInterface.getByName(interface_name));
+            //GROUP = Inet6Address.getByAddress(MCAST_ADDR, InetAddress.getByName(MCAST_ADDR).getAddress(), 10);
         } catch (UnknownHostException ex) {
+            Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SocketException ex) {
             Logger.getLogger(Notifications.class.getName()).log(Level.SEVERE, null, ex);
         }
 
